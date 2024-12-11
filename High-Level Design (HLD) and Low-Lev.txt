@@ -1,0 +1,188 @@
+**High-Level Design (HLD) and Low-Level Design (LLD) for Multi-Agent Workflow Assignment**
+
+---
+
+### **High-Level Design (HLD)**
+
+#### **Objective**
+To create a multi-agent system for researching a company's industry, generating AI/ML/GenAI use cases, and collecting relevant resources/datasets. The system will follow a modular and scalable architecture to ensure efficiency and reusability.
+
+---
+
+#### **System Architecture Overview**
+
+1. **Input Module**
+   - Captures user input (company name).
+   - Ensures input validation and proper formatting.
+
+2. **Agents**
+   - **Agent 1: Research Agent**
+     - Gathers industry-specific information about the company.
+   - **Agent 2: Use Case Generator**
+     - Analyzes the research results and generates three use cases leveraging AI/ML/GenAI.
+   - **Agent 3: Resource Collector**
+     - Searches for relevant datasets/resources for the identified use cases.
+
+3. **Processing Layer**
+   - Orchestrates the interaction between agents.
+   - Handles data flow and intermediate results.
+
+4. **Output Module**
+   - Aggregates results from all agents.
+   - Saves results in a structured JSON file and prints outputs to the console.
+
+5. **LLM Integration**
+   - Uses OpenAI's language model for text generation and analysis within each agent.
+
+6. **Error Handling & Logging**
+   - Ensures smooth execution with retry logic and logs errors for debugging.
+
+---
+
+#### **Workflow Diagram**
+```
++-------------------+
+|   User Input      |
+|  (Company Name)   |
++-------------------+
+           |
+           v
++-------------------+
+|  Research Agent   |
+| Gathers Industry  |
+|   Information     |
++-------------------+
+           |
+           v
++-------------------+
+| Use Case Agent    |
+|  Generates AI/ML  |
+|     Use Cases     |
++-------------------+
+           |
+           v
++-------------------+
+| Resource Agent    |
+| Finds Relevant    |
+|    Datasets       |
++-------------------+
+           |
+           v
++-------------------+
+|  Output Module    |
+| Saves Results as  |
+|    JSON File      |
++-------------------+
+```
+
+---
+
+### **Low-Level Design (LLD)**
+
+#### **Module Details**
+
+1. **Input Module**
+   - **Functionality:**
+     - Accepts the company name from the user.
+     - Validates input to ensure non-empty and valid string.
+   - **Methods:**
+     - `input("Enter the company name for research: ")`
+   - **Error Handling:**
+     - Displays a friendly error message if input is invalid.
+
+2. **Agent 1: Research Agent**
+   - **Functionality:**
+     - Gathers industry information and company focus areas.
+     - Uses a language model to generate the response.
+   - **Implementation:**
+     - `LLMChain` with a prompt template for research.
+     - Inputs: `company_name`
+     - Output: Research details as a string.
+   - **Dependencies:**
+     - OpenAI LLM via LangChain.
+
+3. **Agent 2: Use Case Generator**
+   - **Functionality:**
+     - Analyzes research results to generate three use cases.
+     - Suggests AI/ML/GenAI applications relevant to the industry and company.
+   - **Implementation:**
+     - `LLMChain` with a structured prompt template for use case generation.
+     - Inputs: `industry`, `company_name`
+     - Output: A list of three use cases.
+
+4. **Agent 3: Resource Collector**
+   - **Functionality:**
+     - Searches for relevant datasets or resources to support the identified use cases.
+   - **Implementation:**
+     - `LLMChain` with a structured prompt for resource collection.
+     - Inputs: `use_cases`
+     - Output: Links to datasets/resources in markdown format.
+
+5. **Output Module**
+   - **Functionality:**
+     - Aggregates the outputs of all agents.
+     - Saves the results in a JSON file.
+     - Prints a summary of results to the console.
+   - **Implementation:**
+     - Python `json` library for file operations.
+     - File: `output_results.json`
+
+---
+
+#### **Error Handling & Logging**
+
+1. **Common Errors:**
+   - API rate limits or quota issues.
+   - Missing or invalid input.
+   - LLM failures (e.g., invalid prompt or empty response).
+
+2. **Solutions:**
+   - Use `try-except` blocks for API calls and file operations.
+   - Implement retries with exponential backoff for API rate limits.
+   - Log errors to a file for debugging.
+
+---
+
+#### **Technology Stack**
+
+1. **Programming Language:** Python 3.x
+2. **Libraries:**
+   - `langchain`: Orchestrates LLM-based workflows.
+   - `openai`: For language model integration.
+   - `json`: For output file handling.
+3. **Execution Environment:**
+   - Local Python environment or virtual environment with dependencies installed.
+
+---
+
+#### **Sequence Diagram**
+```
+User ---> Input Module: Provide company name
+Input Module ---> Research Agent: Initiate research
+Research Agent ---> Use Case Agent: Provide industry data
+Use Case Agent ---> Resource Agent: Request resources for use cases
+Resource Agent ---> Output Module: Return resource links
+Output Module ---> User: Display and save results
+```
+
+---
+
+### **Future Enhancements**
+
+1. **Caching:**
+   - Cache research results and use cases to reduce repetitive API calls.
+
+2. **Parallel Execution:**
+   - Run agents in parallel to reduce overall execution time.
+
+3. **Custom Dataset Search:**
+   - Integrate APIs like Kaggle or Hugging Face directly for dataset search.
+
+4. **Dynamic Error Handling:**
+   - Add advanced monitoring and recovery mechanisms for API failures.
+
+---
+
+### **Conclusion**
+This design ensures modularity, scalability, and ease of maintenance while delivering the required functionality for the multi-agent system.
+
